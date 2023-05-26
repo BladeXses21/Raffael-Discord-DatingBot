@@ -7,6 +7,8 @@ name = "pypi"
 geopy = "*"
 requests = "*"
 torchvision = "*"
+pymongo = "*"
+mongoengine = "*"
 
 [dev-packages]
 

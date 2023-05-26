@@ -1,6 +1,6 @@
 import discord.errors
 from discord import Interaction
-
+from discord.ui import Select
 from config import MIN_AGE, MAX_AGE
 from embed.embeds.base import DefaultEmbed
 from embed.embeds.welcome import WelcomePrivateMessage
@@ -9,6 +9,12 @@ from embed.view_builder.like_gender_builder import ChoseLikeGender
 from embed.view_builder.main_view_builder import MainMenuView
 from extension.logger import logger
 from utils.funcs import check_location
+
+gender_options = [
+    discord.SelectOption(label='Хлопець', value='man'),
+    discord.SelectOption(label='Дівчина', value='woman'),
+    discord.SelectOption(label='ЛГБТ-клуб', value='lgbt')
+]
 
 
 class PrivateMessageService:
@@ -22,11 +28,34 @@ class PrivateMessageService:
         self.USER_DESCRIPTION = str()
         self.USER_PHOTO = str()
 
+        self.function_map = {
+            'user_age': self.user_age,
+            'user_gender': self.user_gender,
+            'like_gender': self.like_gender,
+            'user_location': self.user_location,
+            'user_games': self.user_games,
+            'user_description': self.user_description,
+            'user_photo': self.user_photo,
+            'form_successfully_created': self.form_successfully_created
+        }
+
+        self.function_called = {}
+
+    async def call_function(self, interaction: Interaction, function_name: str):
+        print(self.function_called)
+        if function_name in self.function_map:
+            if function_name in self.function_called and self.function_called[function_name]:
+                return False
+
+            self.function_called[function_name] = True
+            return await self.function_map[function_name](interaction)
+
     async def mainMenu(self, interaction):
         logger.info(f'{interaction.author.id} | {interaction.author} викликав mainMenu')
 
         async def create_form(interact: Interaction):
-            return await self.user_age(interact)
+            self.function_called = {}
+            return await self.call_function(interaction=interact, function_name='user_age')
 
         async def look_form(interact: Interaction):
             return await interact.response.send_message(
@@ -58,46 +87,39 @@ class PrivateMessageService:
                 return await interaction.followup.send(embed=DefaultEmbed(description='**Людина вашого віку не може створювати анкету.**'))
             else:
                 self.USER_AGE = age
-                await self.user_gender(interaction)
+                return await self.call_function(interaction=interaction, function_name='user_gender')
         except ValueError:
             return await interaction.followup.send(embed=DefaultEmbed(description='**Вік введено некоректно.**'))
 
     async def user_gender(self, interaction: Interaction):
+        async def user_chose_gender(interact: Interaction):
+            self.USER_GENDER = select_options.values[0]
+            return await self.call_function(interaction=interact, function_name='like_gender')
 
-        async def user_is_woman(interact: Interaction):
-            self.USER_GENDER = 'woman'
-            return await self.like_gender(interact)
+        select_options = Select(custom_id='gender_selection', options=gender_options, placeholder='Оберіть свою стать',
+                                min_values=1, max_values=1)
 
-        async def user_is_man(interact: Interaction):
-            self.USER_GENDER = 'man'
-            return await self.like_gender(interact)
+        view = discord.ui.View(timeout=None)
+        view.add_item(select_options)
 
-        # gender_views = ChoseGenderView(user_is_woman, user_is_man)
+        select_options.callback = user_chose_gender
 
-        gender_options = [
-            discord.SelectOption(label='Хлопець', value='man'),
-            discord.SelectOption(label='Дівчина', value='woman'),
-            discord.SelectOption(label='ЛГБТ-клуб', value='lgbt')
-        ]
-
-        select_options = discord.SelectMenu(custom_id='gender_selection', options=gender_options, placeholder='Оберіть свою стать',
-                                            min_values=1, max_values=1)
-
-        await interaction.followup.send(embed=DefaultEmbed(description='**Вкажи свою стать:**'), view=select_options)
+        await interaction.followup.send(embed=DefaultEmbed(description='**Вкажи свою стать:**'), view=view)
 
     async def like_gender(self, interaction: Interaction):
+        async def user_like_gender(interact: Interaction):
+            self.USER_LIKE_GENDER = select_options.values[0]
+            return await self.call_function(interaction=interact, function_name='user_location')
 
-        async def user_like_woman(interact: Interaction):
-            self.USER_LIKE_GENDER = 'woman'
-            await self.user_location(interact)
+        select_options = Select(custom_id='like_gender_selection', options=gender_options, placeholder='Хто тебе цікавить?',
+                                min_values=1, max_values=1)
 
-        async def user_like_man(interact: Interaction):
-            self.USER_LIKE_GENDER = 'man'
-            await self.user_location(interact)
+        view = discord.ui.View(timeout=None)
+        view.add_item(select_options)
 
-        like_gender_view = ChoseLikeGender(user_like_woman, user_like_man)
+        select_options.callback = user_like_gender
 
-        await interaction.response.send_message(embed=DefaultEmbed(description='**Хто тебе цікавить?**'), view=like_gender_view)
+        await interaction.response.send_message(embed=DefaultEmbed(description='**Хто тебе цікавить?**'), view=view)
 
     async def user_location(self, interaction: Interaction):
         while True:
@@ -116,8 +138,7 @@ class PrivateMessageService:
                     continue
                 else:
                     self.USER_LOCATION = message.content
-                    await self.user_games(interaction)
-                    break
+                    return await self.call_function(interaction=interaction, function_name='user_games')
 
     async def user_games(self, interaction: Interaction):
         await interaction.user.send(embed=DefaultEmbed(description='**Введіть ігри в які ви граєте:**'))
@@ -130,10 +151,10 @@ class PrivateMessageService:
 
         if len(message.content) >= 75:
             self.USER_GAMES = message.content[:75]
-            await self.user_description(interaction)
+            return await self.call_function(interaction=interaction, function_name='user_description')
         else:
             self.USER_GAMES = message.content
-            await self.user_description(interaction)
+            return await self.call_function(interaction=interaction, function_name='user_description')
 
     async def user_description(self, interaction: Interaction):
         await interaction.user.send(embed=DefaultEmbed(description='Введіть опис профілю:'))
@@ -150,11 +171,9 @@ class PrivateMessageService:
                 continue
             else:
                 self.USER_DESCRIPTION = message.content
-                await self.user_photo(interaction)
-                break
+                return await self.call_function(interaction=interaction, function_name='user_photo')
 
     async def user_photo(self, interaction: Interaction):
-        print(self.USER_DESCRIPTION, self.USER_LOCATION, self.USER_LIKE_GENDER, self.USER_GENDER)
         await interaction.user.send(embed=DefaultEmbed(description='Загрузіть фото профілю:'))
 
         while True:
@@ -167,6 +186,10 @@ class PrivateMessageService:
             if len(message.attachments) == 0:
                 await interaction.followup.send(embed=DefaultEmbed(description='Ви не додали фото профілю. Повторіть спробу.'))
                 continue
-            attachment_url = message.attachments[0]
-            await interaction.followup.send(embed=DefaultEmbed(description='Ви надіслали фото профілю!'))
-            break
+            self.USER_PHOTO = message.attachments[0]
+            return await self.call_function(interaction=interaction, function_name='form_successfully_created')
+
+    async def form_successfully_created(self, interaction: Interaction):
+        await interaction.user.send(embed=DefaultEmbed(description='Анкета успішно створена.'))
+
+# todo - продовжити з цього місця, дописати функцію створення анкети користувача та додати user_system.create_user_form

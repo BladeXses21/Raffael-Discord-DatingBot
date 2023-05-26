@@ -13,13 +13,15 @@ class EnumUserGender(str, Enum):
         return list(map(lambda c: c.value, cls))
 
 
-class User(BaseModel):
-    user_id = int
-    username = str
-    city = str
-    gender = str
+class UserModel(BaseModel):
+    id = int
     age = int
-    interest = str
+    gender = str
+    like_gender = str
+    location = str
+    games = str
+    description = str
+    photo = str
 
     def get_user_id(self):
         return self.user_id
