@@ -190,6 +190,7 @@ class PrivateMessageService:
             return await self.call_function(interaction=interaction, function_name='form_successfully_created')
 
     async def form_successfully_created(self, interaction: Interaction):
-        await interaction.user.send(embed=DefaultEmbed(description='Анкета успішно створена.'))
+
+        return await interaction.user.send(embed=DefaultEmbed(description='Анкета успішно створена.'))
 
 # todo - продовжити з цього місця, дописати функцію створення анкети користувача та додати user_system.create_user_form
