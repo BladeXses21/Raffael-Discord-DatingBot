@@ -1,5 +1,4 @@
 from geopy.geocoders import Nominatim
-import cv2
 
 
 def check_location(location):
@@ -13,12 +12,3 @@ def check_location(location):
     except TimeoutError:
         return None
     return location
-
-
-def check_photo_validity(photo):
-    photo = cv2.imread(photo)
-
-    if photo is None:
-        # помилка завантаження фото
-        return False
-    return True

@@ -5,7 +5,7 @@ from config import MONGO_URL
 class DatabaseSystem(object):
     def __init__(self):
         self.client = MongoClient(MONGO_URL)
-        self._db = self.client.Cupidon
+        self._db = self.client.Raffael
 
     @property
     def db(self):

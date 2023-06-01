@@ -3,7 +3,7 @@ import os
 from discord.ext import commands
 
 from config import PREFIX, TOKEN, MAIN_CHANNEL_ID
-from embed.embeds.welcome import WelcomePrivateMessage
+from embed.embeds.panelEmbed import MainPanelEmbed
 from extension.logger import logger
 from service.privete_message_service import PrivateMessageService
 
@@ -15,17 +15,6 @@ client = commands.Bot(command_prefix=PREFIX,
 @client.event
 async def on_ready():
     logger.info('READY')
-
-
-# @client.event
-# async def on_message(message):
-#     if message.channel.id == MAIN_CHANNEL_ID:
-#         print(message)
-#         if message.content == "старт" or message.content == "start":
-#             print("Message")
-#             await private_message_service.mainMenu(user=message.author)
-#     else:
-#         pass
 
 
 @client.event
@@ -44,5 +33,4 @@ for filename in os.listdir("cog"):
     if filename.endswith(".py"):
         client.load_extension(f"cog.{filename[:-3]}")
 
-private_message_service = PrivateMessageService(client)
 client.run(TOKEN)
