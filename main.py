@@ -2,10 +2,8 @@ import discord
 import os
 from discord.ext import commands
 
-from config import PREFIX, TOKEN, MAIN_CHANNEL_ID
-from embed.embeds.panelEmbed import MainPanelEmbed
+from config import PREFIX, TOKEN
 from extension.logger import logger
-from service.privete_message_service import PrivateMessageService
 
 client = commands.Bot(command_prefix=PREFIX,
                       help_command=None,

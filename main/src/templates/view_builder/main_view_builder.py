@@ -1,5 +1,6 @@
 from discord.ui import View
-from embed.button.buttons import buttons
+
+from templates.button.buttons import buttons
 
 
 class MainMenuView(View):

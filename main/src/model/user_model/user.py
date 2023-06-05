@@ -3,13 +3,15 @@ from pydantic import BaseModel
 from enum import Enum, unique
 
 
-class UserModel:
-    def __init__(self, id, age, gender, like_gender, location, games, description, photo):
-        self.id: int = id
-        self.age: int = age
-        self.gender: str = gender
-        self.like_gender: str = like_gender
-        self.location: str = location
-        self.games: str = games
-        self.description: str = description
-        self.photo: str = photo
+class UserModel(BaseModel):
+    user_id: int
+    user_name: str
+    user_age: int
+    user_gender: str
+    user_like_gender: str
+    user_location: str
+    user_games: str
+    user_description: str
+    user_photo: str
+    user_language: str
+    user_likes: int = 0

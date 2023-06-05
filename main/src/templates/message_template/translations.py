@@ -21,6 +21,8 @@ translations = {
         "👌 давай почнемо": "👌 давай почнемо",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Зараз я допоможу тобі знайти пару або прекрасних друзів",
 
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.",
+
         'Привіт!': 'Привіт!',
         'Хлопець': 'Хлопець',
         'Дівчина': 'Дівчина',
@@ -60,6 +62,8 @@ translations = {
         "Натисніть": "Click",
         "👌 давай почнемо": "👌 Let's start",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Now I will help you find a match or wonderful friends",
+
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Taking into account the disclaimer, I would like to remind you that there is a possibility that people can impersonate someone else on the Internet.\nIt is worth noting that as a bot, I do not collect any personal data or identify users through passport or other personal information. By continuing to use the bot, you do so at your own risk and under your full responsibility.",
 
         'Привіт!': 'Greeting!',
         'Хлопець': 'Boy',
@@ -101,6 +105,8 @@ translations = {
         "👌 давай почнемо": "👌 Давай начнем",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Сейчас я помогу тебе найти пару или замечательных друзей",
 
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Принимая во внимание предупреждение, хотел бы напомнить, что в Интернете существует возможность, что люди могут выдавать себя за кого-то другого.\nСтроителньо заметить, что я, как бот, не собираю никаких персональных данных и не идентифицирую пользователей по паспортным или иным личным данным. Продолжая использовать бота, вы делаете это на свой собственный риск и под свою полную ответственность.",
+
         'Хлопець': 'Мальчик',
         'Дівчина': 'Девочка',
         'LGBT': 'ЛГБТ-клуб',
@@ -139,6 +145,8 @@ translations = {
         "Натисніть": "Klicken Sie",
         "👌 давай почнемо": "👌 Lass uns anfangen",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Jetzt helfe ich dir, eine Übereinstimmung oder wunderbare Freunde zu finden",
+
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Unter Berücksichtigung des Vorbehalts möchte ich daran erinnern, dass im Internet die Möglichkeit besteht, dass Menschen sich als jemand anderes ausgeben können.\nEs ist zu beachten, dass ich als Bot keine persönlichen Daten sammle oder Benutzer anhand von Pass- oder anderen persönlichen Informationen identifiziere. Wenn Sie den Bot weiterhin verwenden, geschieht dies auf eigenes Risiko und unter Ihrer eigenen Verantwortung.",
 
         'Хлопець': 'Junge',
         'Дівчина': 'Mädchen',
@@ -179,6 +187,8 @@ translations = {
         "👌 давай почнемо": "👌 Commençons",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Maintenant je vais t'aider à trouver un partenaire ou de merveilleux amis",
 
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ En tenant compte de l'avertissement, je voudrais rappeler qu'il est possible que les gens se fassent passer pour quelqu'un d'autre sur Internet.\nIl convient de noter que, en tant que bot, je ne collecte aucune donnée personnelle ni n'identifie les utilisateurs via leur passeport ou d'autres informations personnelles. En continuant à utiliser le bot, vous le faites à vos propres risques et sous votre entière responsabilité.",
+
         'Хлопець': 'Garçon',
         'Дівчина': 'Fille',
         'LGBT': 'LGBT',
@@ -217,6 +227,8 @@ translations = {
         "Натисніть": "Haz clic",
         "👌 давай почнемо": "👌 Vamos a empezar",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Ahora te ayudaré a encontrar una pareja o amigos maravillosos",
+
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Teniendo en cuenta la advertencia, me gustaría recordar que existe la posibilidad de que las personas se hagan pasar por alguien más en Internet.\nEs importante tener en cuenta que como bot, no recopilo datos personales ni identifico a los usuarios a través de su pasaporte u otra información personal. Al continuar utilizando el bot, lo haces bajo tu propio riesgo y responsabilidad.",
 
         'Хлопець': 'Chico',
         'Дівчина': 'Chica',
@@ -257,6 +269,8 @@ translations = {
         "👌 давай почнемо": "👌 Iniziamo",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Ora ti aiuterò a trovare un match o amici meravigliosi",
 
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Considerando l'avvertimento, vorrei ricordare che esiste la possibilità che le persone si fingano qualcun altro su Internet.\nÈ importante notare che, come bot, non raccolgo dati personali né identifico gli utenti attraverso passaporti o altre informazioni personali. Continuando a utilizzare il bot, lo fai a tuo rischio e sotto la tua completa responsabilità.",
+
         'Хлопець': 'Ragazzo',
         'Дівчина': 'Ragazza',
         'LGBT': 'LGBT',
@@ -295,6 +309,8 @@ translations = {
         "Натисніть": "Kliknij",
         "👌 давай почнемо": "👌 Zaczynamy",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "Teraz pomogę Ci znaleźć dopasowanie lub wspaniałych przyjaciół",
+
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ Biorąc pod uwagę zastrzeżenie, chciałbym przypomnieć, że istnieje możliwość, że ludzie mogą podszywać się za kogoś innego w Internecie.\nWarto zauważyć, że jako bot nie zbieram żadnych danych osobowych ani nie identyfikuję użytkowników za pomocą paszportów lub innych danych osobowych. Kontynuując korzystanie z bota, robisz to na własne ryzyko i pełną odpowiedzialność.",
 
         'Хлопець': 'Chłopiec',
         'Дівчина': 'Dziewczyna',
@@ -335,6 +351,8 @@ translations = {
         "👌 давай почнемо": "👌 さあ、始めましょう",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "今、マッチングや素晴らしい友達を見つける手助けをします",
 
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ 免責事項を考慮して、インターネット上で他の誰かを装う可能性があることをお知らせします。\nこのボットは個人情報を収集せず、パスポートや他の個人情報を通じてユーザーを識別しません。ボットを引き続き使用することで、自己責任のもとで使用することになります。",
+
         'Хлопець': '男の子',
         'Дівчина': '女の子',
         'LGBT': 'LGBT',
@@ -373,6 +391,8 @@ translations = {
         "Натисніть": "點擊",
         "👌 давай почнемо": "👌 讓我們開始",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "現在我將幫助你找到匹配或美好的朋友",
+
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ 考虑到免责声明，我想提醒您，在互联网上有可能有人冒充别人的情况。\n值得注意的是，作为机器人，我不会收集任何个人数据，也不会通过护照或其他个人信息来识别用户。如果您继续使用机器人，那么就完全由您承担风险和责任。",
 
         'Хлопець': '男孩',
         'Дівчина': '女孩',
@@ -413,6 +433,8 @@ translations = {
         "👌 давай почнемо": "👌 시작해봅시다",
         "Зараз я допоможу тобі знайти пару або прекрасних друзів": "지금은 매칭이나 멋진 친구를 찾는 데 도움을 드릴게요",
 
+        "❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.": "❗️ 면책 조항을 고려하여 인터넷에서 사람들이 다른 사람으로 위장할 수 있다는 가능성을 상기시키고 싶습니다.\n봇으로서, 저는 어떠한 개인 정보도 수집하지 않으며 사용자를 여권이나 다른 개인 정보로 식별하지 않습니다. 봇을 계속 사용함으로써 귀하는 자체적인 책임하에 사용하게 됩니다.",
+
         'Хлопець': '소년',
         'Дівчина': '소녀',
         'LGBT': 'LGBT',
@@ -438,3 +460,12 @@ def translate_text(text, language):
         if text in translations[language]:
             return translations[language][text]
     return text
+
+
+def get_translated_gender(gender, language):
+    translated_gender = translations.get(language, {}).get(gender)
+    print(gender)
+    print(translated_gender)
+    if translated_gender:
+        return translated_gender
+    return gender

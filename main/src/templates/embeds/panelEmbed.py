@@ -1,6 +1,6 @@
 from discord import Embed
 
-from message_template.translations import translate_text
+from templates.message_template.translations import translate_text
 
 
 # todo - прикрасити панель керування смайлами

@@ -1,6 +1,7 @@
 from discord.ui import View
-from embed.button.buttons import buttons
-from message_template.translations import translate_text
+
+from templates.button.buttons import buttons
+from templates.message_template.translations import translate_text
 
 
 class LetsGoView(View):
@@ -9,3 +10,10 @@ class LetsGoView(View):
         buttons.lets_go_button.label = translate_text("👌 давай почнемо", user_language)
         buttons.lets_go_button.callback = presentation_two
         self.add_item(buttons.lets_go_button)
+
+
+class OkView(View):
+    def __init__(self, control_panel):
+        super().__init__(timeout=None)
+        buttons.ok_button.callback = control_panel
+        self.add_item(buttons.ok_button)

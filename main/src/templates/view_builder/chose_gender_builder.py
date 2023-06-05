@@ -1,6 +1,6 @@
 from discord.ui import View
-from embed.button.buttons import buttons
-from message_template.translations import translate_text
+from template.button.buttons import buttons
+from template.message_template.translations import translate_text
 
 
 class ChoseGenderView(View):

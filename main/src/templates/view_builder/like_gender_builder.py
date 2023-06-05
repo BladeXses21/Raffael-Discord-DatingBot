@@ -1,5 +1,5 @@
 from discord.ui import View
-from embed.button.buttons import buttons
+from template.button.buttons import buttons
 
 
 class ChoseLikeGender(View):

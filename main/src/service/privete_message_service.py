@@ -1,21 +1,26 @@
+import asyncio
+
 import discord.errors
 from discord import Interaction
 from discord.ui import Select
 
 from config import MIN_AGE, MAX_AGE
 from database.system.user_system import user_system
-from embed.embeds.base import DefaultEmbed
-from embed.embeds.panelEmbed import MainPanelEmbed
-from embed.view_builder.accept_button import StartConfirmation
-from embed.view_builder.lets_go_button import LetsGoView
-from embed.view_builder.main_view_builder import MainMenuView
-from message_template.translations import translate_text
+from templates.embeds.base import DefaultEmbed
+from templates.embeds.panelEmbed import MainPanelEmbed
+
+from templates.embeds.user_profile import UserProfileEmbed
+from templates.message_template.translations import translate_text, translations
+from templates.view_builder.accept_button import StartConfirmation
+from templates.view_builder.lets_go_button import LetsGoView, OkView
+from templates.view_builder.main_view_builder import MainMenuView
 from utils.funcs import check_location
 
 
 class PrivateMessageService:
     def __init__(self, client):
         self.client = client
+        self.reset_variables()
         self.USER_NAME = str()
         self.USER_AGE = int()
         self.USER_GENDER = str()
@@ -24,6 +29,7 @@ class PrivateMessageService:
         self.USER_GAMES = str()
         self.USER_DESCRIPTION = str()
         self.USER_PHOTO = str()
+        self.USER_LANGUAGE = str()
 
         self.function_map = {
             'language_scanning': self.language_scanning,
@@ -35,10 +41,22 @@ class PrivateMessageService:
             'user_games': self.user_games,
             'user_description': self.user_description,
             'user_photo': self.user_photo,
-            'form_successfully_created': self.form_successfully_created
+            'form_successfully_created': self.form_successfully_created,
+            'user_profile': self.user_profile
         }
 
         self.function_called = {}
+
+    def reset_variables(self):
+        self.USER_NAME = str()
+        self.USER_AGE = int()
+        self.USER_GENDER = str()
+        self.USER_LIKE_GENDER = str()
+        self.USER_LOCATION = str()
+        self.USER_GAMES = str()
+        self.USER_DESCRIPTION = str()
+        self.USER_PHOTO = str()
+        self.USER_LANGUAGE = str()
 
     async def call_function(self, interaction: Interaction, function_name: str):
         if function_name in self.function_map:
@@ -50,16 +68,23 @@ class PrivateMessageService:
 
     async def language_scanning(self, author):
         view = StartConfirmation(self.presentation_one)
-        return await author.send(embed=DefaultEmbed('**click on the button to continue**'), view=view)
+        return await author.send(embed=DefaultEmbed('**```click on the button to continue```**'), view=view)
 
     async def presentation_one(self, interaction: Interaction):
         user_language = interaction.locale
-        lets_go__view = LetsGoView(self.control_panel, user_language)
-        return await interaction.response.send_message(embed=DefaultEmbed(translate_text('Зараз я допоможу тобі знайти пару або прекрасних друзів', user_language)), view=lets_go__view)
+        self.USER_LANGUAGE = user_language
+        lets_go__view = LetsGoView(self.presentation_two, user_language)
+        return await interaction.response.send_message(
+            embed=DefaultEmbed(f"**{translate_text('```Зараз я допоможу тобі знайти пару або прекрасних друзів```', user_language)}**"),
+            view=lets_go__view)
 
     async def presentation_two(self, interaction: Interaction):
-        # todo - тут вліпити текст з дайвінчика
-        return await interaction.response.send_message(embed=DefaultEmbed('123'))
+        user_language = interaction.locale
+        ok_view = OkView(self.control_panel)
+        source_text = translate_text(
+            '❗️ Зважаючи на застереження, я хотів би нагадати, що в Інтернеті існує можливість того, що люди можуть представляти себе за когось іншого.\nВарто відзначити, що я, як бот, не збираю жодних особистих даних та не ідентифікую користувачів через паспортні або інші особисті дані. Продовжуючи використовувати бота, ви робите це на свій власний ризик та під свою повну відповідальність.',
+            user_language)
+        return await interaction.response.send_message(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
 
     async def control_panel(self, interaction: Interaction):
         user_language = interaction.locale
@@ -68,8 +93,7 @@ class PrivateMessageService:
             return await self.call_function(interaction=interact, function_name='user_name')
 
         async def look_form(interact: Interaction):
-            return await interact.response.send_message(
-                embed=DefaultEmbed(description=translate_text('Привіт!', user_language)))
+            return await self.call_function(interaction=interact, function_name='user_profile')
 
         async def delete_form(interact: Interaction):
             return await interact.response.send_message(
@@ -102,7 +126,7 @@ class PrivateMessageService:
 
     async def user_age(self, interaction: Interaction):
         user_language = interaction.locale
-        await interaction.user.send(embed=DefaultEmbed(translate_text('Скільки тобі років?', interaction.locale), view=None))
+        await interaction.user.send(embed=DefaultEmbed(translate_text('Скільки тобі років?', user_language)))
 
         def check(m):
             if m.channel.id == interaction.channel.id and not m.author.bot:
@@ -152,9 +176,12 @@ class PrivateMessageService:
             return await self.call_function(interaction=interact, function_name='user_location')
 
         gender_options = [
-            discord.SelectOption(label=translate_text('Хлопець', user_language), value=translate_text('Хлопець', user_language)),
-            discord.SelectOption(label=translate_text('Дівчина', user_language), value=translate_text('Дівчина', user_language)),
-            discord.SelectOption(label=translate_text('LGBT', user_language), value=translate_text('LGBT', user_language))
+            discord.SelectOption(label=translate_text(translations["uk"]["Хлопець"], user_language),
+                                 value=translate_text(translations["uk"]["Хлопець"], user_language)),
+            discord.SelectOption(label=translate_text(translations["uk"]["Дівчина"], user_language),
+                                 value=translate_text(translations["uk"]["Дівчина"], user_language)),
+            discord.SelectOption(label=translate_text(translations["uk"]["LGBT"], user_language),
+                                 value=translate_text(translations["uk"]["LGBT"], user_language))
         ]
         select_options = Select(custom_id='like_gender_selection', options=gender_options,
                                 placeholder=translate_text('Хто тебе цікавить?', user_language),
@@ -169,24 +196,28 @@ class PrivateMessageService:
 
     async def user_location(self, interaction: Interaction):
         user_language = interaction.locale
-        while True:
-            try:
-                await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('З якого ти міста?', user_language)), view=None)
-            except discord.errors.InteractionResponded:
-                def check(m):
-                    if m.channel.id == interaction.channel.id and not m.author.bot:
-                        return m
+        lock = asyncio.Lock()
 
-                message = await self.client.wait_for('message', check=check)
+        async with lock:
+            while True:
+                try:
+                    await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('З якого ти міста?', user_language)),
+                                                            view=None)
+                except discord.errors.InteractionResponded:
+                    def check(m):
+                        if m.channel.id == interaction.channel.id and not m.author.bot:
+                            return m
 
-                verification_location = check_location(message.content)
-                if verification_location is None:
-                    await interaction.user.send(
-                        embed=DefaultEmbed(description=translate_text('Локація введена некоректно.\nПовторіть спробу.', user_language)))
-                    continue
-                else:
-                    self.USER_LOCATION = message.content
-                    return await self.call_function(interaction=interaction, function_name='user_games')
+                    message = await self.client.wait_for('message', check=check)
+
+                    verification_location = check_location(message.content)
+                    if verification_location is None:
+                        await interaction.user.send(
+                            embed=DefaultEmbed(description=translate_text('Локація введена некоректно.\nПовторіть спробу.', user_language)))
+                        continue
+                    else:
+                        self.USER_LOCATION = message.content
+                        return await self.call_function(interaction=interaction, function_name='user_games')
 
     async def user_games(self, interaction: Interaction):
         user_language = interaction.locale
@@ -225,27 +256,38 @@ class PrivateMessageService:
 
     async def user_photo(self, interaction: Interaction):
         user_language = interaction.locale
+        lock = asyncio.Lock()
         await interaction.user.send(embed=DefaultEmbed(description=translate_text('Загрузіть фото профілю:', user_language)))
 
-        while True:
-            def check(m):
-                if m.channel.id == interaction.channel.id and not m.author.bot:
-                    return m
+        async with lock:
+            while True:
+                def check(m):
+                    if m.channel.id == interaction.channel.id and not m.author.bot:
+                        return m
 
-            message = await self.client.wait_for('message', check=check)
+                message = await self.client.wait_for('message', check=check)
 
-            if len(message.attachments) == 0:
-                await interaction.followup.send(
-                    embed=DefaultEmbed(description=translate_text('Ви не додали фото профілю. Повторіть спробу.', user_language)))
-                continue
-            self.USER_PHOTO = str(message.attachments[0])
-            return await self.call_function(interaction=interaction, function_name='form_successfully_created')
+                if len(message.attachments) == 0:
+                    await interaction.followup.send(
+                        embed=DefaultEmbed(description=translate_text('Ви не додали фото профілю. Повторіть спробу.', user_language)))
+                    continue
+                self.USER_PHOTO = str(message.attachments[0])
+                return await self.call_function(interaction=interaction, function_name='form_successfully_created')
 
     async def form_successfully_created(self, interaction: Interaction):
         self.function_called = {}
         user_language = interaction.locale
-        user_system.create_user_form(user_id=interaction.user.id, age=self.USER_AGE, gender=self.USER_GENDER, like_gender=self.USER_LIKE_GENDER,
-                                     location=self.USER_LOCATION, games=self.USER_GAMES, description=self.USER_DESCRIPTION, photo=self.USER_PHOTO)
-        return await interaction.followup.send(embed=DefaultEmbed(description=translate_text('Анкета успішно створена.', user_language)))
+        user_system.create_user_form(user_id=interaction.user.id, name=self.USER_NAME, age=self.USER_AGE, gender=self.USER_GENDER,
+                                     like_gender=self.USER_LIKE_GENDER, location=self.USER_LOCATION, games=self.USER_GAMES,
+                                     description=self.USER_DESCRIPTION, photo=self.USER_PHOTO, language=user_language)
+        await interaction.followup.send(embed=DefaultEmbed(description=translate_text('Анкета успішно створена.', user_language)))
+        self.reset_variables()
+        return await self.call_function(interaction=interaction, function_name='user_profile')
 
-# todo - зробити ембед з виведенням даних користувача - показ створеної анкети
+    async def user_profile(self, interaction: Interaction):
+        user = interaction.user
+        fetch_user = user_system.fetch_variables_by_user(user=user)
+        print(fetch_user)
+        return await interaction.response.send_message(embed=UserProfileEmbed(fetch_user).embed)
+
+# todo - після прийняття правил створювати окрему запис в бд з мовою для того, щоб правила не повторювались після кожного виклику команду

@@ -1,8 +1,6 @@
 from discord.ui import Button
 from discord import ButtonStyle
 
-from message_template.translations import translate_text
-
 
 class Buttons:
     def __init__(self):
@@ -14,9 +12,11 @@ class Buttons:
         self.woman = Button(style=ButtonStyle.secondary, label="woman")
         self.man = Button(style=ButtonStyle.secondary, label="man")
 
-        self.accept_button = Button(style=ButtonStyle.green, label="Click")
+        self.accept_button = Button(style=ButtonStyle.blurple, label="Click")
 
         self.lets_go_button = Button(style=ButtonStyle.secondary, label='👌 давай почнемо')
+
+        self.ok_button = Button(style=ButtonStyle.secondary, label='👌 Ok')
 
 
 buttons = Buttons()
