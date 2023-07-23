@@ -12,5 +12,13 @@ class DatabaseSystem(object):
         return self._db
 
     @property
-    def user_collection(self):
-        return self._db.user_collection
+    def user_form_collect(self):
+        return self._db.user_form
+
+    @property
+    def user_confirmation_collect(self):
+        return self._db.user_confirmation
+
+    @property
+    def user_profile_collect(self):
+        return self._db.user_profile_collect

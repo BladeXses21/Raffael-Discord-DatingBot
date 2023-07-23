@@ -1,17 +1,36 @@
-from mongoengine import connect, Document, IntField, StringField
+from mongoengine import connect, Document, IntField, StringField, BooleanField
 
 connect("Raffael")
 
 
-class UserForm(Document):
-    user_id = IntField(required=True, min_length=1)  # discord id
-    user_name = StringField(min_length=1)
-    user_age = IntField(min_value=1)
-    user_gender = StringField(min_length=1)
-    user_like_gender = StringField(min_length=1)
-    user_location = StringField(min_length=1)
-    user_games = StringField(min_length=1)
-    user_description = StringField(min_length=1)
-    user_photo = StringField(min_length=1)
-    user_language = StringField(min_length=1)
-    user_likes = IntField(min_value=0)
+class UserFormDB(Document):
+    user_id = IntField(required=True)
+    language = StringField(required=True)
+    name = StringField(required=True)
+    age = IntField(required=True)
+    gender = StringField(required=True)
+    opposite_gender = StringField(required=True)
+    location = StringField(required=True)
+    games = StringField(required=True)
+    description = StringField(required=True)
+    photo = StringField(required=True)
+    likes = IntField(default=0)
+
+
+class UserConfirmationDB(Document):
+    user_id = IntField(required=True)
+    confirmed = BooleanField()
+
+
+class UserProfileDB(Document):
+    user_id = IntField(required=True)
+    language = StringField(required=True)
+    name = StringField(required=True)
+    age = IntField(required=True)
+    gender = StringField(required=True)
+    opposite_gender = StringField(required=True)
+    location = StringField(required=True)
+    games = StringField(required=True)
+    description = StringField(required=True)
+    photo = StringField(required=True)
+    likes = IntField(required=True)

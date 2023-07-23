@@ -1,7 +1,7 @@
 from discord.ui import View
 
 from templates.button.buttons import buttons
-from templates.message_template.translations import translate_text
+from templates.translation_msg.translations import translate_text
 
 
 class LetsGoView(View):

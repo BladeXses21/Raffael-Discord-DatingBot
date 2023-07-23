@@ -18,5 +18,7 @@ class Buttons:
 
         self.ok_button = Button(style=ButtonStyle.secondary, label='👌 Ok')
 
+        self.no_stop = Button(style=ButtonStyle.secondary, label='No stop')
+
 
 buttons = Buttons()

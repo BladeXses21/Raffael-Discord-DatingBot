@@ -1,17 +1,34 @@
-from pydantic import BaseModel
-
-from enum import Enum, unique
+from pydantic import BaseModel, Field
 
 
-class UserModel(BaseModel):
-    user_id: int
-    user_name: str
-    user_age: int
-    user_gender: str
-    user_like_gender: str
-    user_location: str
-    user_games: str
-    user_description: str
-    user_photo: str
-    user_language: str
-    user_likes: int = 0
+class UserForm(BaseModel):
+    id: int = Field(..., title='User ID')
+    name: str = Field(..., title='Name')
+    age: int = Field(..., title='Age')
+    gender: str = Field(..., title='Gender')
+    opposite_gender: str = Field(..., title='Opposite Gender')
+    location: str = Field(..., title='Location')
+    games: str = Field(..., title='Games')
+    description: str = Field(..., title='Description')
+    photo: str = Field(..., title='Photo')
+    language: str = Field(..., title='Language')
+    likes: int = Field(0, title='Likes')
+
+
+class UserConfirmation(BaseModel):
+    id: int = Field(..., title='User ID')
+    confirmed: bool = Field(False, title='Confirmed')
+
+
+class UserProfile(BaseModel):
+    id: int = Field(..., title='User ID')
+    name: str = Field(..., title='Name')
+    age: int = Field(..., title='Age')
+    gender: str = Field(..., title='Gender')
+    opposite_gender: str = Field(..., title='Opposite Gender')
+    location: str = Field(..., title='Location')
+    games: str = Field(..., title='Games')
+    description: str = Field(..., title='Description')
+    photo: str = Field(..., title='Photo')
+    language: str = Field(..., title='Language')
+    likes: int = Field(..., title='Likes')
