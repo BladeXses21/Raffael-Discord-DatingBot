@@ -17,7 +17,7 @@ def check_location(location):
 # validate user form in user_form system
 
 def validate_user_form(user_form):
-    if not user_form.id or user_form.id is str():
+    if not user_form.user_id or user_form.user_id is str():
         return False
     if not user_form.name or user_form.name is int():
         return False

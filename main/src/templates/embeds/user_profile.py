@@ -1,22 +1,24 @@
 from discord import Embed
 
 from model.user_model.user import UserForm
-from templates.translation_msg.translations import translate_text, get_translated_gender
+from templates.translation_msg.translations import translate_text
 
 
 class UserProfileEmbed(object):
-    def __init__(self, user: UserForm):
-        gender_emote = get_translated_gender(user.user_gender, user.language)
+    def __init__(self, user):
+        name_word = "Ім'я"
+        user_dict = UserForm.parse_obj(user)
+        # gender_emote = get_translated_gender(user.gender, user.language)
         self._embed = Embed(
             color=3092790,
-            description=str(user.description),
+            description=f"**{translate_text('Уподобайки', user_dict.language)}: {user_dict.likes}❤**\n\n"
+                        f"**{translate_text(name_word, user_dict.language)}:** {user_dict.name}\n"
+                        f"**{translate_text('Вік', user_dict.language)}:** {user_dict.age}\n\n"
+                        f"**{translate_text('Місто', user_dict.language)}:** {user_dict.location}\n\n"
+                        f"**{translate_text('Ігри', user_dict.language)}:** {user_dict.games}\n\n"
+                        f"{user_dict.description}\n"
         )
-        self._embed.add_field(name=f"{translate_text('Уподобайки:', user.likes)}", value=f"{user.likes}❤", inline=False)
-        self._embed.add_field(name=translate_text("Ім'я:", user.language), value=f"{user.user_name}, {gender_emote}", inline=False)
-        self._embed.add_field(name=translate_text('Вік:', user.language), value=str(user.age), inline=False)
-        self._embed.add_field(name=translate_text('Місто:', user.language), value=str(user.location), inline=False)
-        self._embed.add_field(name=translate_text('Ігри:', user.language), value=str(user.games), inline=False)
-        self._embed.set_image(url=str(user.photo))
+        self._embed.set_image(url=str(user_dict.photo))
 
     @property
     def embed(self):

@@ -18,7 +18,3 @@ class DatabaseSystem(object):
     @property
     def user_confirmation_collect(self):
         return self._db.user_confirmation
-
-    @property
-    def user_profile_collect(self):
-        return self._db.user_profile_collect

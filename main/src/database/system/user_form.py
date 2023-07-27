@@ -1,19 +1,18 @@
 from discord import User
 
 from database.database_system import DatabaseSystem
-from database.mongo_types import UserFormDB, UserProfileDB
+from database.mongo_types import UserFormDB
 from model.user_model.user import UserForm
-from utils.funcs import validate_user_form
 
 
 class UserSystem(DatabaseSystem):
 
     def create_user_form(self, id: int, name: str, age: int, gender: str, opposite_gender: str, location: str, games: str, description: str,
                          photo: str, language: str):
-        user_model = UserForm(id=id, name=name, age=age, gender=gender, opposite_gender=opposite_gender, location=location, games=games,
+        user_model = UserForm(user_id=id, name=name, age=age, gender=gender, opposite_gender=opposite_gender, location=location, games=games,
                               description=description, photo=photo, language=language)
         user_form = UserFormDB()
-        user_form.user_id = user_model.id
+        user_form.user_id = user_model.user_id
         user_form.name = user_model.name
         user_form.age = user_model.age
         user_form.gender = user_model.gender
@@ -25,23 +24,17 @@ class UserSystem(DatabaseSystem):
         user_form.language = user_model.language
         user_form.likes = user_model.likes
 
-        self.user_form_collect.insert_one(user_form.to_mongo())
-
-        if validate_user_form(user_form):
-            user_profile = UserProfileDB(user_form)
-            if self.user_profile_collect.find_one({"user_id": user_model.id}, {}):
-                self.user_profile_collect.update_one({"user_id": user_model.id}, {"$set": {user_profile.to_mongo()}})
-                return True
-            self.user_profile_collect.insert_one(user_profile.to_mongo())
+        if self.user_form_collect.find_one({"user_id": user_model.user_id}, {}):
+            self.user_form_collect.update_one({"user_id": user_model.user_id}, {"$set": {user_form.to_json()}})
             return True
-        else:
-            return False
+        self.user_form_collect.insert_one(user_form.to_mongo())
+        return True
 
     def fetch_variables_by_user(self, user: User):
         user_data = self.user_form_collect.find_one({"user_id": user.id}, {})
-        if user_data is not None:
-            return UserForm.parse_obj(user_data)
-        return False
+        if user_data is None:
+            return False
+        return user_data
 
 
 user_system = UserSystem()

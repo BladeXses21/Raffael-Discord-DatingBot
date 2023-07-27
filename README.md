@@ -36,3 +36,12 @@ pip freeze > requirements.txt
 ```angular2html
 \...\CupidBot\main.py
 ```
+
+##  Feedback
+
+#### `If you have any questions or suggestions for the project, please feel free to contact me through my social media accounts:`
+```
+Discord: bladexses
+Telegram: @BladeXses
+```
+##### `I am always happy to receive feedback from users to make the project better. Thank you for your attention!`
