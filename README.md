@@ -1,38 +1,38 @@
-#### Активуйте virtualenv, який містить потрібні бібліотеки.
-#### Встановіть бібліотеку pipenv, якщо вона ще не встановлена, за допомогою команди:
+#### Activate the virtualenv that contains the necessary libraries.
+#### Install the pipenv library if it is not already installed using the command:
 ```angular2html
 pip install pipenv  
 ```
-#### Змініть директорію на поточну папку проекту.
-#### Створіть нове середовище Pipenv, використовуючи команду:
+#### Change the directory to the current project folder.
+#### Create a new Pipenv environment using the command:
 ```angular2html
 pipenv --python 3.x
 ```
-#### Встановіть всі бібліотеки з вашого virtualenv в середовищі Pipenv, використовуючи команду:
+#### Install all the libraries from your virtualenv into the Pipenv environment using the command:
 ```angular2html
 pipenv install --ignore-pipfile
 ```
-#### Створіть requirements.txt, використовуючи команду
+#### Create requirements.txt using the command:
 ```angular2html
 pipenv lock -r > requirements.txt
 ```
-#### Створіть Pipfile.lock, використовуючи команду:
+#### Create Pipfile.lock using the command:
 ```angular2html
 pipenv lock
 ```
-#### Перевірте, чи є у Pipfile бібліотеки, використовуючи команду:
+#### Check if the libraries in Pipfile are installed using the command:
 ```angular2html
 pipenv graph
 ```
-#### Якщо в requirements.txt немає бібліотек використайте наступну команду: 
+#### If there are no libraries in requirements.txt, use the following command: 
 ```angular2html
 pip freeze > requirements.txt
 ```
-#### В конфігурації робочу дерикторію змініть за шляхом:
+#### In the configuration, change the working directory to:
 ```angular2html
 \...\CupidBot\main\src
 ```
-#### Також не забудьте виставити потрібний інтерпритатор та шлях до головного скрипту за шляхом:
+#### Also, do not forget to set the appropriate interpreter and path to the main script as follows:
 ```angular2html
 \...\CupidBot\main.py
 ```
@@ -42,6 +42,8 @@ pip freeze > requirements.txt
 #### `If you have any questions or suggestions for the project, please feel free to contact me through my social media accounts:`
 ```
 Discord: bladexses
+```
+```
 Telegram: @BladeXses
 ```
 ##### `I am always happy to receive feedback from users to make the project better. Thank you for your attention!`

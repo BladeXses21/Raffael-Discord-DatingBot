@@ -18,4 +18,3 @@ class UserForm(BaseModel):
 class UserConfirmation(BaseModel):
     user_id: int = Field(..., title='User ID')
     confirmed: bool = Field(False, title='Confirmed')
-
