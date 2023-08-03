@@ -108,7 +108,6 @@ class PrivateMessageService:
           # The user who triggered the function.
           author: User
         """
-        fetch_user = user_system.fetch_variables_by_user(user=author)
         view = StartConfirmation(self.presentation_one, language='en')
         return await author.send(embed=DefaultEmbed('**```click on the button to continue```**'), view=view)
 
@@ -158,8 +157,8 @@ class PrivateMessageService:
         if interaction is not None:
             user_language = interaction.locale
 
-        async def create_form(interact: Interaction):
-            return await self.call_function(interaction=interact, function_name='user_name')
+        # async def create_form(interact: Interaction):
+        #     return await self.call_function(interaction=interact, function_name='user_name')
 
         async def find_form(interact: Interaction):
             return await self.call_function(interaction=interact, function_name='find_person')
@@ -175,8 +174,7 @@ class PrivateMessageService:
             return await interact.response.send_message(
                 embed=DefaultEmbed(description=translate_text('greeting', user_language)))
 
-        menu_views = MainMenuView(create_form=create_form, find_form=find_form, look_form=look_form,
-                                  settings_form=settings_form, share_form=share_form)
+        menu_views = MainMenuView(find_form=find_form, look_form=look_form, settings_form=settings_form, share_form=share_form)
 
         if user_data is not None:
             user_dict = UserForm.parse_obj(user_data)
@@ -184,7 +182,7 @@ class PrivateMessageService:
             return await get_user.send(embed=MainPanelEmbed(user_dict.language).embed, view=menu_views)
         return await interaction.response.send_message(embed=MainPanelEmbed(user_language).embed, view=menu_views)
 
-    async def user_name(self, interaction: Interaction):
+    async def user_name(self, interaction: Interaction, call_function: bool):
         """
         # This function asks the user to enter their name.
         # The name must be between MIN_NAME_SIZE and MAX_NAME_SIZE characters long.
@@ -197,7 +195,8 @@ class PrivateMessageService:
         """
         user_language = interaction.locale
         view = discord.ui.View()
-        await interaction.user.send(embed=DefaultEmbed(translate_text("enter_name", user_language)), view=view)
+        self.function_called["user_name"] = call_function
+        await interaction.response.send_message(embed=DefaultEmbed(translate_text("enter_name", user_language)), view=view)
 
         def check(m):
             if m.channel.id == interaction.channel.id and not m.author.bot:
@@ -235,13 +234,14 @@ class PrivateMessageService:
 
             try:
                 age = int(msg.content)
-                if MIN_AGE <= age >= MAX_AGE:
+                if MIN_AGE <= age <= MAX_AGE:
                     self.USER_AGE = int(age)
                     await self.call_function(interaction=interaction, function_name='user_gender')
                     break
                 else:
                     raise ValueError
             except ValueError:
+                self.function_called = {}
                 return await interaction.followup.send(embed=DefaultEmbed(description=translate_text('age_error', user_language)))
 
     async def user_gender(self, interaction: Interaction):
@@ -296,6 +296,7 @@ class PrivateMessageService:
             # It stores the selected option in the `OPPOSITE_GENDER` attribute and returns.
             """
             self.OPPOSITE_GENDER = select_options.values[0]
+            print(select_options.values[0])
             return await self.call_function(interaction=interact, function_name='user_location')
 
         gender_options = [
@@ -314,7 +315,6 @@ class PrivateMessageService:
         view.add_item(select_options)
 
         select_options.callback = user_like_gender
-
         await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=view)
 
     async def user_location(self, interaction: Interaction):
@@ -330,27 +330,28 @@ class PrivateMessageService:
 
         user_language = interaction.locale
         lock = asyncio.Lock()
+        view = discord.ui.View()
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('your_city', user_language)), view=view)
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('your_city', user_language)), view=view)
 
         async with lock:
             while True:
-                try:
-                    await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('your_city', user_language)),
-                                                            view=None)
-                except discord.errors.InteractionResponded:
-                    def check(m):
-                        if m.channel.id == interaction.channel.id and not m.author.bot:
-                            return m
+                def check(m):
+                    if m.channel.id == interaction.channel.id and not m.author.bot:
+                        return m
 
-                    message = await self.client.wait_for('message', check=check)
+                message = await self.client.wait_for('message', check=check)
 
-                    verification_location = check_location(message.content)
-                    if verification_location is None:
-                        await interaction.user.send(
-                            embed=DefaultEmbed(description=translate_text('location_error', user_language)))
-                        continue
-                    else:
-                        self.USER_LOCATION = message.content
-                        return await self.call_function(interaction=interaction, function_name='user_games')
+                verification_location = check_location(message.content)
+                if verification_location is None:
+                    await interaction.user.send(embed=DefaultEmbed(description=translate_text('location_error', user_language)))
+                    continue
+                else:
+                    self.USER_LOCATION = message.content
+                    await self.call_function(interaction=interaction, function_name='user_games')
+                    break
 
     async def user_games(self, interaction: Interaction):
         """
@@ -431,12 +432,12 @@ class PrivateMessageService:
                 attachment_url = str(message.attachments[0])
 
                 if len(message.attachments) == 0:
-                    await interaction.followup.send(
-                        embed=DefaultEmbed(description=translate_text('no_photo_error', user_language)))
+                    self.function_called = {}
+                    await interaction.followup.send(embed=DefaultEmbed(description=translate_text('no_photo_error', user_language)))
                     continue
                 if not self.is_valid_image_url(attachment_url):
-                    await interaction.followup.send(
-                        embed=DefaultEmbed(description=translate_text('no_photo_url_error', user_language)))
+                    self.function_called = {}
+                    await interaction.followup.send(embed=DefaultEmbed(description=translate_text('no_photo_url_error', user_language)))
                     continue
 
                 self.USER_PHOTO = str(message.attachments[0])
@@ -482,10 +483,9 @@ class PrivateMessageService:
           # The interaction that triggered the function.
           interaction: Interaction
         """
+        self.function_called = {}
         user_language = interaction.locale
-
-        return await interaction.user.send(embed=DefaultEmbed(
-            description=translate_text('try_again', user_language)))
+        return await interaction.user.send(embed=DefaultEmbed(description=translate_text('try_again', user_language)))
 
     @staticmethod
     def is_valid_image_url(url) -> bool:

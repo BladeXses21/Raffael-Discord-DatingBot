@@ -38,3 +38,56 @@ def validate_user_form(user_form):
     if not user_form.language or user_form.language is int():
         return False
     return True
+
+
+# todo - передивитись цю функцію для пошуку анкет
+# import geopy.distance
+#
+# def search_users(user_location, radius):
+#   """Searches for users who are within a given radius of the user's location.
+#
+#   Args:
+#     user_location: The user's location, as a tuple of (latitude, longitude).
+#     radius: The search radius, in kilometers.
+#
+#   Returns:
+#     A list of users who are within the search radius.
+#   """
+#
+#   # Get the list of all users.
+#   users = get_all_users()
+#
+#   # Filter the users by location.
+#   filtered_users = [user for user in users if distance_between_points(user_location, user.location) <= radius]
+#
+#   # Return the filtered list of users.
+#   return filtered_users
+#
+# def distance_between_points(lat1, lon1, lat2, lon2):
+#   """Calculates the distance between two points.
+#
+#   Args:
+#     lat1: The latitude of the first point.
+#     lon1: The longitude of the first point.
+#     lat2: The latitude of the second point.
+#     lon2: The longitude of the second point.
+#
+#   Returns:
+#     The distance between the two points, in kilometers.
+#   """
+#
+#   # Convert the latitude and longitude values to radians.
+#   lat1 = lat1 * pi / 180
+#   lon1 = lon1 * pi / 180
+#   lat2 = lat2 * pi / 180
+#   lon2 = lon2 * pi / 180
+#
+#   # Calculate the distance between the two points.
+#   distance = geopy.distance.distance(
+#       (lat1, lon1),
+#       (lat2, lon2),
+#       unit='km'
+#   ).km
+#
+#   # Return the distance.
+#   return distance

@@ -1,5 +1,9 @@
 from discord import Interaction
 
+from database.system.user_form import user_system
+from templates.embeds.user_profile import UserProfileEmbed
+from templates.view_builder.dating_view_builder import DatingMenuView
+
 
 # todo - доробити пошук партнерів тут
 class MatchmakingService:
@@ -35,4 +39,6 @@ class MatchmakingService:
             return await self.function_map[function_name](interaction)
 
     async def find_person(self, interaction: Interaction):
-        pass
+        dating_view = DatingMenuView(None, None, None, None, None, None)
+        fetch_user = user_system.fetch_variables_by_user(user=interaction.user)
+        return await interaction.response.send_message(embed=UserProfileEmbed(fetch_user).embed, view=dating_view)

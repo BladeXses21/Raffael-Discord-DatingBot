@@ -5,6 +5,7 @@ from discord import Bot, Interaction
 from cog.base import BaseCog
 from config import GUILD_IDS
 from extension.logger import logger
+from service.matchmaking_service import MatchmakingService
 from service.private_message_service import PrivateMessageService
 from templates.localization.translations import translate_text
 from templates.view_builder.start_dating import StartDating
@@ -15,6 +16,7 @@ class AdminUser(BaseCog):
         super().__init__(client)
         logger.info("Cog AdminUser connected")
         self.private_message_service = PrivateMessageService(client)
+        self.matchmaking_service = MatchmakingService(client)
 
     admin = discord.SlashCommandGroup('admin', 'default command for admin', guild_ids=[*GUILD_IDS])
 
@@ -32,9 +34,17 @@ class AdminUser(BaseCog):
             await self.private_message_service.user_name(interaction)
             return await interaction.response.send_message(content=translate_text('check_private_messages', user_language), ephemeral=True)
         if interaction.data['custom_id'] == 'create_form':
-            return await self.private_message_service.user_name(interaction)
+            return await self.private_message_service.user_name(interaction, True)
         if interaction.data['custom_id'] == 'look_form':
             return await self.private_message_service.user_profile(interaction)
+        if interaction.data['custom_id'] == 'settings_form':
+            # todo - замінити на функцію з налашуваннями
+            return await self.private_message_service.user_name(interaction)
+        if interaction.data['custom_id'] == 'settings_form':
+            # todo - замінити на функцію з поділитись із друзями
+            return await self.private_message_service.user_name(interaction)
+        if interaction.data['custom_id'] == 'find_form':
+            return await self.matchmaking_service.find_person(interaction)
         pass
 
 
