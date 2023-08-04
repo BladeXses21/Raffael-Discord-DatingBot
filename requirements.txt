@@ -17,3 +17,8 @@ typing_extensions==4.5.0
 virtualenv==20.23.0
 virtualenv-clone==0.5.7
 yarl==1.9.2
+
+geopy~=2.3.0
+requests~=2.31.0
+mongoengine~=0.27.0
+pymongo~=4.3.3

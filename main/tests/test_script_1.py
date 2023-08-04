@@ -1,13 +1,4 @@
-import os
-import sys
-
-import unittest
 from utils.funcs import check_location
-
-
-def test_pass():
-    result = check_location("12345")
-    assert result is None
 
 
 def test_check_location():
@@ -26,13 +17,3 @@ def test_check_location():
     print("Тестуємо рядок, який представляє некоректне місцезнаходження і викликає помилку Invalid Location")
     result = check_location("Invalid Location")
     assert result is None
-
-
-if __name__ == '__main__':
-    unittest.main()
-
-PROJECT_PATH = os.getcwd()
-SOURCE_PATH = os.path.join(
-    PROJECT_PATH,"src"
-)
-sys.path.append(SOURCE_PATH)

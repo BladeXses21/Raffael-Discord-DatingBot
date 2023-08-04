@@ -7,7 +7,7 @@ def check_location(location):
     elif any(char.isdigit() for char in location):
         return None
     try:
-        geolocator = Nominatim(user_agent='CupidBot')
+        geolocator = Nominatim(user_agent='Raffael')
         location = geolocator.geocode(str(location))
     except TimeoutError:
         return None
@@ -38,7 +38,6 @@ def validate_user_form(user_form):
     if not user_form.language or user_form.language is int():
         return False
     return True
-
 
 # todo - передивитись цю функцію для пошуку анкет
 # import geopy.distance

@@ -2,7 +2,7 @@ import asyncio
 
 import discord.errors
 import requests
-from discord import Interaction
+from discord import Interaction, Message
 from discord.ui import Select
 
 from config import MIN_AGE, MAX_AGE, MAX_NAME_SIZE
@@ -17,7 +17,7 @@ from templates.localization.translations import translate_text
 from templates.view_builder.accept_button import StartConfirmation
 from templates.view_builder.lets_go_button import LetsGoView, OkView
 from templates.view_builder.main_view_builder import MainMenuView
-from utils.funcs import check_location
+from utilit.funcs import check_location
 
 
 class PrivateMessageService:
@@ -343,7 +343,6 @@ class PrivateMessageService:
                         return m
 
                 message = await self.client.wait_for('message', check=check)
-
                 verification_location = check_location(message.content)
                 if verification_location is None:
                     await interaction.user.send(embed=DefaultEmbed(description=translate_text('location_error', user_language)))
@@ -507,3 +506,9 @@ class PrivateMessageService:
             return False
         except requests.RequestException:
             return False
+
+
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod()
