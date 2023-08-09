@@ -17,6 +17,7 @@ def load_localization(language):
         return None
 
 
+# todo - панель керування зробити велики літерами у всіх локалізаціях
 def translate_text(text, language):
     localization = load_localization(language)
     if text in localization[language]:
@@ -26,5 +27,3 @@ def translate_text(text, language):
         if text in localization_en['en']:
             return localization_en['en'][text]
         return text
-
-

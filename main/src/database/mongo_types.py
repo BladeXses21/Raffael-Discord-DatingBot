@@ -1,4 +1,4 @@
-from mongoengine import connect, Document, IntField, StringField, BooleanField
+from mongoengine import connect, Document, IntField, StringField, BooleanField, fields
 
 connect("Raffael")
 
@@ -10,7 +10,7 @@ class UserFormDB(Document):
     age = IntField(required=True)
     gender = StringField(required=True)
     opposite_gender = StringField(required=True)
-    location = StringField(required=True)
+    location = fields.ListField()
     games = StringField(required=True)
     description = StringField(required=True)
     photo = StringField(required=True)

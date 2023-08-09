@@ -8,6 +8,14 @@ from model.user_model.user import UserConfirmation
 class UserConfirmed(DatabaseSystem):
 
     def user_confirm_rules(self, user: User) -> bool:
+        """
+        Confirmation of the rules for using the bot by the user.
+
+        :param user:
+            Args: user: discord.User
+        :return:
+            A boll
+        """
         if self.user_confirmation_collect.find_one({"user_id": user.id}):
             return False
         user_confirmation_model = UserConfirmation(user_id=user.id, confirmed=True)

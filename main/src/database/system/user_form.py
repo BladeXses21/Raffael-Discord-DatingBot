@@ -1,3 +1,5 @@
+import array
+
 from discord import User
 
 from database.database_system import DatabaseSystem
@@ -7,7 +9,7 @@ from model.user_model.user import UserForm
 
 class UserSystem(DatabaseSystem):
 
-    def create_user_form(self, id: int, name: str, age: int, gender: str, opposite_gender: str, location: str, games: str, description: str,
+    def create_user_form(self, id: int, name: str, age: int, gender: str, opposite_gender: str, location: array.ArrayType, games: str, description: str,
                          photo: str, language: str) -> bool:
         user_model = UserForm(user_id=id, name=name, age=age, gender=gender, opposite_gender=opposite_gender, location=location, games=games,
                               description=description, photo=photo, language=language)

@@ -1,3 +1,4 @@
+import array
 import asyncio
 
 import discord.errors
@@ -10,14 +11,15 @@ from database.system.user_confirmation import user_confirmed
 from database.system.user_form import user_system
 from model.user_model.user import UserForm
 from templates.embeds.base import DefaultEmbed
-from templates.embeds.panelEmbed import MainPanelEmbed
+from templates.embeds.mainPanel import MainPanelEmbed
+from templates.embeds.settingsPanel import SettingsEmbed
 
-from templates.embeds.user_profile import UserProfileEmbed
+from templates.embeds.userProfile import UserProfileEmbed
 from templates.localization.translations import translate_text
 from templates.view_builder.accept_button import StartConfirmation
 from templates.view_builder.lets_go_button import LetsGoView, OkView
 from templates.view_builder.main_view_builder import MainMenuView
-from utilit.funcs import check_location
+from utils.funcs import check_location
 
 
 class PrivateMessageService:
@@ -45,7 +47,7 @@ class PrivateMessageService:
         self.USER_AGE = int()
         self.USER_GENDER = str()
         self.OPPOSITE_GENDER = str()
-        self.USER_LOCATION = str()
+        self.USER_LOCATION = []
         self.USER_GAMES = str()
         self.USER_DESCRIPTION = str()
         self.USER_PHOTO = str()
@@ -66,6 +68,7 @@ class PrivateMessageService:
             'form_successfully_created': self.form_successfully_created,
             'user_profile': self.user_profile,
             'try_again': self.try_again,
+            'user_settings': self.user_settings,
         }
         self.function_called = {}
 
@@ -77,7 +80,7 @@ class PrivateMessageService:
         self.USER_AGE = int()
         self.USER_GENDER = str()
         self.OPPOSITE_GENDER = str()
-        self.USER_LOCATION = str()
+        self.USER_LOCATION = []
         self.USER_GAMES = str()
         self.USER_DESCRIPTION = str()
         self.USER_PHOTO = str()
@@ -122,9 +125,7 @@ class PrivateMessageService:
         user_language = interaction.locale
         self.USER_LANGUAGE = user_language
         lets_go__view = LetsGoView(self.presentation_two, user_language)
-        return await interaction.response.send_message(
-            embed=DefaultEmbed(f"**```{translate_text('start_message', user_language)}```**"),
-            view=lets_go__view)
+        return await interaction.user.send(embed=DefaultEmbed(f"**```{translate_text('start_message', user_language)}```**"), view=lets_go__view)
 
     async def presentation_two(self, interaction: Interaction):
         """
@@ -153,7 +154,7 @@ class PrivateMessageService:
            # The user form data, or None if the function was not triggered by a form.
            user_data: UserForm
          """
-        user_language = None
+        user_language = 'en'
         if interaction is not None:
             user_language = interaction.locale
 
@@ -163,26 +164,26 @@ class PrivateMessageService:
         async def find_form(interact: Interaction):
             return await self.call_function(interaction=interact, function_name='find_person')
 
-        async def look_form(interact: Interaction):
-            return await self.call_function(interaction=interact, function_name='user_profile')
+        # async def look_form(interact: Interaction):
+        #     return await self.call_function(interaction=interact, function_name='user_profile')
 
         async def settings_form(interact: Interaction):
-            return await interact.response.send_message(
-                embed=DefaultEmbed(description=translate_text('greeting', user_language)))
+            return await self.call_function(interaction=interact, function_name='user_settings')
 
         async def share_form(interact: Interaction):
             return await interact.response.send_message(
                 embed=DefaultEmbed(description=translate_text('greeting', user_language)))
 
-        menu_views = MainMenuView(find_form=find_form, look_form=look_form, settings_form=settings_form, share_form=share_form)
+        menu_views = MainMenuView(find_form=find_form, settings_form=settings_form, share_form=share_form)
 
         if user_data is not None:
             user_dict = UserForm.parse_obj(user_data)
             get_user = await self.client.fetch_user(user_dict.user_id)
             return await get_user.send(embed=MainPanelEmbed(user_dict.language).embed, view=menu_views)
+
         return await interaction.response.send_message(embed=MainPanelEmbed(user_language).embed, view=menu_views)
 
-    async def user_name(self, interaction: Interaction, call_function: bool):
+    async def user_name(self, interaction: Interaction):
         """
         # This function asks the user to enter their name.
         # The name must be between MIN_NAME_SIZE and MAX_NAME_SIZE characters long.
@@ -195,7 +196,6 @@ class PrivateMessageService:
         """
         user_language = interaction.locale
         view = discord.ui.View()
-        self.function_called["user_name"] = call_function
         await interaction.response.send_message(embed=DefaultEmbed(translate_text("enter_name", user_language)), view=view)
 
         def check(m):
@@ -296,7 +296,6 @@ class PrivateMessageService:
             # It stores the selected option in the `OPPOSITE_GENDER` attribute and returns.
             """
             self.OPPOSITE_GENDER = select_options.values[0]
-            print(select_options.values[0])
             return await self.call_function(interaction=interact, function_name='user_location')
 
         gender_options = [
@@ -343,12 +342,13 @@ class PrivateMessageService:
                         return m
 
                 message = await self.client.wait_for('message', check=check)
-                verification_location = check_location(message.content)
-                if verification_location is None:
+                latitude, longitude = check_location(message.content)
+                if latitude is None:
                     await interaction.user.send(embed=DefaultEmbed(description=translate_text('location_error', user_language)))
                     continue
                 else:
-                    self.USER_LOCATION = message.content
+                    self.USER_LOCATION.extend([latitude, longitude])
+                    print(self.USER_LOCATION)
                     await self.call_function(interaction=interaction, function_name='user_games')
                     break
 
@@ -470,9 +470,23 @@ class PrivateMessageService:
         user = interaction.user
         fetch_user = user_system.fetch_variables_by_user(user=user)
         if fetch_user is not False:
-            return await interaction.user.send(embed=UserProfileEmbed(fetch_user).embed)
+            return await interaction.response.send_message(embed=UserProfileEmbed(fetch_user).embed)
         else:
             return await self.call_function(interaction=interaction, function_name='try_again')
+
+    async def user_settings(self, interaction: Interaction):
+
+        user = interaction.user
+        fetch_user = user_system.fetch_variables_by_user(user=user)
+        if fetch_user is False:
+            await self.call_function(interaction=interaction, function_name='try_again')
+            return self.call_function(interaction=interaction, function_name='user_name')
+        else:
+            user_language = interaction.locale
+            if interaction.message is None:
+                return await interaction.response.send_message(embed=SettingsEmbed(user_language).embed)
+            else:
+                return await interaction.response.edit_message(embed=SettingsEmbed(user_language).embed)
 
     async def try_again(self, interaction: Interaction):
         """
@@ -485,6 +499,15 @@ class PrivateMessageService:
         self.function_called = {}
         user_language = interaction.locale
         return await interaction.user.send(embed=DefaultEmbed(description=translate_text('try_again', user_language)))
+
+    # todo - використати цю функцію для усіх кнопок для забезпечення коректрої перевірки чи є користувач на сервері
+    # def user_verification_to_server(self, interaction: Interaction, guild: discord.Guild):
+    #     member = await guild.fetch_member(interaction.user.id)
+    #     if member is not None:
+    #         return False
+    #     return True
+
+    # todo - return await interaction.user.send(embed=DefaultEmbed(description=f'{interaction.user.display_name} {translate_text("user_is_not_on_the_server", user_language)}'))
 
     @staticmethod
     def is_valid_image_url(url) -> bool:
@@ -506,9 +529,3 @@ class PrivateMessageService:
             return False
         except requests.RequestException:
             return False
-
-
-if __name__ == '__main__':
-    import doctest
-
-    doctest.testmod()
