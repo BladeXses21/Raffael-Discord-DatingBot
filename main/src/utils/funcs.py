@@ -1,6 +1,29 @@
-import discord
+import json
+from math import pi
+
+from discord import Embed
 from geopy.geocoders import Nominatim
 import geopy.distance
+import requests
+
+
+def get_embed(json_):
+    embed_json = json.loads(json_)
+
+    embed = Embed().from_dict(embed_json)
+    return embed
+
+
+def get_city_from_coordinates(latitude, longitude):
+    url = f"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json"
+    response = requests.get(url)
+    data = response.json()
+    print("data", data)
+    if 'address' in data:
+        city = data['address'].get('town', '')
+        return city
+    else:
+        return None
 
 
 def check_location(location):
@@ -63,7 +86,7 @@ def search_users(user_location, radius):
     Returns:
       A list of users who are within the search radius.
     """
-
+    # todo - добавити код якого не вистачає
     # Get the list of all users.
     users = get_all_users()
 

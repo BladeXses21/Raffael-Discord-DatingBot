@@ -262,9 +262,9 @@ class PrivateMessageService:
             return await self.call_function(interaction=interact, function_name='opposite_gender')
 
         gender_options = [
-            discord.SelectOption(label=translate_text('Хлопець', user_language), value=translate_text('gender_boy', user_language)),
-            discord.SelectOption(label=translate_text('Дівчина', user_language), value=translate_text('gender_girl', user_language)),
-            discord.SelectOption(label=translate_text('LGBT', user_language), value=translate_text('gender_lgbt', user_language))
+            discord.SelectOption(label=translate_text('Хлопець', user_language), value='boy'),
+            discord.SelectOption(label=translate_text('Дівчина', user_language), value='girl'),
+            discord.SelectOption(label=translate_text('LGBT', user_language), value='lgbt')
         ]
 
         select_options = Select(custom_id='gender_selection', options=gender_options, placeholder=translate_text('choose_gender', user_language),
@@ -300,11 +300,11 @@ class PrivateMessageService:
 
         gender_options = [
             discord.SelectOption(label=translate_text("gender_boy", user_language),
-                                 value=translate_text("gender_boy", user_language)),
+                                 value="boy"),
             discord.SelectOption(label=translate_text("gender_girl", user_language),
-                                 value=translate_text("gender_girl", user_language)),
+                                 value="girl"),
             discord.SelectOption(label=translate_text("gender_lgbt", user_language),
-                                 value=translate_text("gender_lgbt", user_language))
+                                 value="lgbt")
         ]
         select_options = Select(custom_id='like_gender_selection', options=gender_options,
                                 placeholder=translate_text('interested_in', user_language),

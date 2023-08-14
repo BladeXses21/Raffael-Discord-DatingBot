@@ -1,6 +1,5 @@
 from discord import Interaction
 
-from database.system.user_form import user_system
 from model.user_model.user import UserForm
 from templates.embeds.userProfile import UserProfileEmbed
 from templates.view_builder.dating_view_builder import DatingMenuView

@@ -1,5 +1,3 @@
-import array
-
 from pydantic import BaseModel, Field
 
 

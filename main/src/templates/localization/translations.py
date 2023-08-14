@@ -6,6 +6,8 @@
 import os
 import json
 
+from model.user_model.user import UserForm
+
 
 def load_localization(language):
     localization_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)))
@@ -27,3 +29,15 @@ def translate_text(text, language):
         if text in localization_en['en']:
             return localization_en['en'][text]
         return text
+
+
+def get_gender_emoji(user_gender: str) -> str:
+    match user_gender:
+        case "boy":
+            return "♂"
+        case "girl":
+            return "♀"
+        case "lgbt":
+            return "🌈"
+        case _:
+            return ""
