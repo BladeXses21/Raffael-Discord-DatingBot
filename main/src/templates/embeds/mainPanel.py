@@ -5,7 +5,6 @@ from config import emoji_talk_together_url, emoji_fill_form, emoji_block_profile
 from templates.localization.translations import translate_text
 
 
-# todo - прикрасити панель керування смайлами
 class MainPanelEmbed(object):
     def __init__(self, user_language):
         self._embed = Embed(

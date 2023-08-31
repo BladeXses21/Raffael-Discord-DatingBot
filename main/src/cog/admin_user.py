@@ -10,7 +10,7 @@ from extension.logger import logger
 from service.matchmaking_service import MatchmakingService
 from service.private_message_service import PrivateMessageService
 from templates.embeds.base import DefaultEmbed
-from templates.view_builder.start_dating import StartDating
+from templates.views.start_dating_view_builder import StartDating
 from utils.funcs import get_embed
 
 

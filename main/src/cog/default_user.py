@@ -7,6 +7,7 @@ from database.system.user_form import user_system
 from extension.logger import logger
 
 from config import GUILD_IDS
+from service.matchmaking_service import MatchmakingService
 from service.private_message_service import PrivateMessageService
 from templates.localization.translations import translate_text
 
@@ -15,6 +16,7 @@ class DefaultUser(BaseCog):
     def __init__(self, client: Bot):
         super().__init__(client)
         self.private_message_service = PrivateMessageService(client)
+        self.matchmaking_service = MatchmakingService(client)
         logger.info("Cog DefaultUser connected")
 
     user = discord.SlashCommandGroup('user', 'default command for user', guild_ids=[*GUILD_IDS])
@@ -46,10 +48,26 @@ class DefaultUser(BaseCog):
             return await self.private_message_service.user_profile(interaction)
         if interaction.data['custom_id'] == 'settings_form':
             return await self.private_message_service.user_settings(interaction)
+        if interaction.data['custom_id'] == 'button_back':
+            return await self.private_message_service.back_to_menu(interaction)
+        if interaction.data['custom_id'] == 'button_photo':
+            return await self.private_message_service.edit_photo(interaction)
+        if interaction.data['custom_id'] == 'button_description':
+            return await self.private_message_service.edit_description(interaction)
+        if interaction.data['custom_id'] == 'button_games':
+            return await self.private_message_service.edit_games(interaction)
+        if interaction.data['custom_id'] == 'button_opposite_gender':
+            return await self.private_message_service.edit_opposite_gender(interaction)
+        if interaction.data['custom_id'] == 'button_gender':
+            return await self.private_message_service.edit_gender(interaction)
+        if interaction.data['custom_id'] == 'button_age':
+            return await self.private_message_service.edit_age(interaction)
+        if interaction.data['custom_id'] == 'button_name':
+            return await self.private_message_service.edit_name(interaction)
         if interaction.data['custom_id'] == 'find_form':
-            user_data = user_system.fetch_variables_by_user(interaction.user)
-            return await self.matchmaking_service.find_user_profile(interaction, user_data)
-        pass
+            # todo - поки що працює
+            fetch_user = user_system.fetch_variables_by_user(user=interaction.user)
+            return await self.matchmaking_service.find_user_profile(interaction, fetch_user)
 
 
 def setup(bot):

@@ -1,10 +1,15 @@
 import json
 from math import pi
 
-from discord import Embed
+from discord import Embed, Interaction
 from geopy.geocoders import Nominatim
 import geopy.distance
 import requests
+
+from database.system.user_form import user_system
+from model.user_model.user import UserForm
+from templates.embeds.base import DefaultEmbed
+from templates.localization.translations import translate_text
 
 
 def get_embed(json_):
@@ -14,11 +19,31 @@ def get_embed(json_):
     return embed
 
 
+def is_valid_image_url(url) -> bool:
+    """
+    This function checks if the given URL is a valid image URL.
+
+    Args:
+      # The URL to check.
+      url: str
+
+    Returns:
+      # True if the URL is a valid image URL, False otherwise.
+      bool
+    """
+    try:
+        response = requests.head(url)
+        if response.status_code == 200 and response.headers.get('content-type', '').startswith('image/'):
+            return True
+        return False
+    except requests.RequestException:
+        return False
+
+
 def get_city_from_coordinates(latitude, longitude):
     url = f"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json"
     response = requests.get(url)
     data = response.json()
-    print("data", data)
     if 'address' in data:
         city = data['address'].get('town', '')
         return city
@@ -76,23 +101,22 @@ def validate_user_form(user_form):
 
 # todo - передивитись цю функцію для пошуку анкет
 
-def search_users(user_location, radius):
+def search_users(user_location, radius, all_users):
     """Searches for users who are within a given radius of the user's location.
 
     Args:
       user_location: The user's location, as a tuple of (latitude, longitude).
       radius: The search radius, in kilometers.
+      all_users: A list of all users with their locations.
 
     Returns:
       A list of users who are within the search radius.
     """
-    # todo - добавити код якого не вистачає
-    # Get the list of all users.
-    users = get_all_users()
-
     # Filter the users by location.
-    filtered_users = [user for user in users if distance_between_points(user_location, user.location) <= radius]
-
+    filtered_users = [
+        UserForm.parse_obj(user) for user in all_users if
+        distance_between_points(user_location[0], user_location[1], user.location[0], user.location[1]) <= radius
+    ]
     # Return the filtered list of users.
     return filtered_users
 
@@ -110,18 +134,8 @@ def distance_between_points(lat1, lon1, lat2, lon2):
       The distance between the two points, in kilometers.
     """
 
-    # Convert the latitude and longitude values to radians.
-    lat1 = lat1 * pi / 180
-    lon1 = lon1 * pi / 180
-    lat2 = lat2 * pi / 180
-    lon2 = lon2 * pi / 180
-
     # Calculate the distance between the two points.
-    distance = geopy.distance.distance(
-        (lat1, lon1),
-        (lat2, lon2),
-        unit='km'
-    ).km
+    distance = geopy.distance.geodesic((lat1, lon1), (lat2, lon2)).kilometers
 
     # Return the distance.
     return distance

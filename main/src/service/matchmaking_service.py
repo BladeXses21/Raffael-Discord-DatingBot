@@ -1,8 +1,11 @@
 from discord import Interaction
 
+from config import SEARCH_RADIUS
+from database.system.user_form import user_system
 from model.user_model.user import UserForm
 from templates.embeds.userProfile import UserProfileEmbed
-from templates.view_builder.dating_view_builder import DatingMenuView
+from templates.views.dating_view_builder import DatingMenuView
+from utils.funcs import search_users
 
 
 # todo - доробити пошук партнерів тут
@@ -79,9 +82,13 @@ class MatchmakingService:
         dating_view = DatingMenuView(like_user_profile, block_user_profile, skip_user_profile,
                                      report_user_profile, stop_search_user_profile, approve_user_profile)
 
-        if user_data is not None:
+        if user_data is None:
             return await interaction.user.send(embed=UserProfileEmbed(user_data).embed)
 
+        user_dict = UserForm.parse_obj(user_data)
+        all_users = user_system.get_all_users()
+        users_within_radius = search_users(user_dict.location, SEARCH_RADIUS, all_users)
+        print(users_within_radius, 'users_within_radius')
         return await interaction.response.send_message(embed=UserProfileEmbed(user_data).embed, view=dating_view)
 
     async def like_user(self, interaction: Interaction):

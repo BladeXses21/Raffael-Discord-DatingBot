@@ -5,7 +5,6 @@ from config import emoji_font, emoji_age, emoji_back, emoji_description, emoji_g
 from templates.localization.translations import translate_text
 
 
-# todo - прикрасити панель керування емодзі які були добавлені, опис вже добавлений у локалізацію uk
 class SettingsEmbed(object):
     def __init__(self, user_language):
         self._embed = Embed(

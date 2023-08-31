@@ -45,27 +45,27 @@ class Buttons:
         # start_dating: This button starts the dating process.
         self.start_dating = Button(style=ButtonStyle.secondary, label='start_dating', custom_id='start_dating')
         # ok_button: This button confirms the action.
-        self.ok_button = Button(style=ButtonStyle.secondary, label='👌 Ok')
+        self.ok_button = Button(style=ButtonStyle.secondary, label='👌 Ok', custom_id='button_ok')
         # no_stop: This button cancels the action.
-        self.no_stop = Button(style=ButtonStyle.secondary, label='stop')
+        self.no_stop = Button(style=ButtonStyle.secondary, label='stop', custom_id='button_stop')
         # name_button: This button to change the name
-        self.name_button = Button(style=ButtonStyle.secondary, emoji=emoji_name)
+        self.name_button = Button(style=ButtonStyle.secondary, emoji=emoji_name, custom_id='button_name')
         # age_button: This button to change the age
-        self.age_button = Button(style=ButtonStyle.secondary, emoji=emoji_age)
+        self.age_button = Button(style=ButtonStyle.secondary, emoji=emoji_age, custom_id='button_age')
         # gender_button: This button to change the gender
-        self.gender_button = Button(style=ButtonStyle.secondary, emoji=emoji_gender)
+        self.gender_button = Button(style=ButtonStyle.secondary, emoji=emoji_gender, custom_id='button_gender')
         # opposite_gender_button: This button to change the opposite gender
-        self.opposite_gender_button = Button(style=ButtonStyle.secondary, emoji=emoji_opposite_gender)
+        self.opposite_gender_button = Button(style=ButtonStyle.secondary, emoji=emoji_opposite_gender, custom_id='button_opposite_gender')
         # location_button: This button to change the location
-        self.location_button = Button(style=ButtonStyle.secondary, emoji=emoji_location)
+        self.location_button = Button(style=ButtonStyle.secondary, emoji=emoji_location, custom_id='button_location')
         # games_button: This button to change the games
-        self.games_button = Button(style=ButtonStyle.secondary, emoji=emoji_games)
+        self.games_button = Button(style=ButtonStyle.secondary, emoji=emoji_games, custom_id='button_games')
         # description_button: This button to change the description
-        self.description_button = Button(style=ButtonStyle.secondary, emoji=emoji_description)
+        self.description_button = Button(style=ButtonStyle.secondary, emoji=emoji_description, custom_id='button_description')
         # photo_button: This button to change the photo
-        self.photo_button = Button(style=ButtonStyle.secondary, emoji=emoji_photo)
+        self.photo_button = Button(style=ButtonStyle.secondary, emoji=emoji_photo, custom_id='button_photo')
         # back_button: button to return to the previous menu
-        self.back_button = Button(style=ButtonStyle.secondary, emoji=emoji_back)
+        self.back_button = Button(style=ButtonStyle.secondary, emoji=emoji_back, custom_id='button_back')
 
 
 buttons = Buttons()
