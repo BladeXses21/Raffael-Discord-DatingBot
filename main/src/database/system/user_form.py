@@ -29,7 +29,7 @@ class UserSystem(DatabaseSystem):
         user_form.likes = user_model.likes
 
         if self.user_form_collect.find_one({"user_id": user_model.user_id}, {}):
-            self.user_form_collect.update_one({"user_id": user_model.user_id}, {"$set": {user_form.to_json()}})
+            self.user_form_collect.update_one({"user_id": user_model.user_id}, {"$set": user_form.to_mongo()})
             return True
         self.user_form_collect.insert_one(user_form.to_mongo())
         return True

@@ -5,6 +5,7 @@ from discord.ext import commands
 from config import PREFIX, TOKEN
 from extension.logger import logger
 
+# initialize the bot
 client = commands.Bot(command_prefix=PREFIX,
                       help_command=None,
                       intents=discord.Intents.all())
@@ -31,4 +32,12 @@ for filename in os.listdir("cog"):
     if filename.endswith(".py"):
         client.load_extension(f"cog.{filename[:-3]}")
 
-client.run(TOKEN)
+
+# launch the bot
+def start_bot():
+    client.run(TOKEN)
+
+
+if __name__ == "__main__":
+    # launch the function start_bot()
+    start_bot()

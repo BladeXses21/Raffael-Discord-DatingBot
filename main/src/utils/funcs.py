@@ -68,6 +68,7 @@ def check_location(location):
     try:
         geolocator = Nominatim(user_agent='Raffael')
         location = geolocator.geocode(str(location))
+        print(location)
     except TimeoutError:
         return None
     return location.latitude, location.longitude

@@ -71,7 +71,11 @@ class PrivateMessageService:
           # The user who triggered the function.
           author: User
         """
-        view = StartConfirmation(self.presentation_one, language='en')
+
+        def start_presentation(interact: Interaction):
+            return self.presentation_one(interact)
+
+        view = StartConfirmation(start_presentation, language='en')
         return await author.send(embed=DefaultEmbed('**```click on the button to continue```**'), view=view)
 
     async def presentation_one(self, interaction: Interaction):
@@ -84,8 +88,16 @@ class PrivateMessageService:
         """
         user_language = interaction.locale
         self.USER_LANGUAGE = user_language
-        lets_go__view = LetsGoView(self.presentation_two, user_language)
-        return await interaction.user.send(embed=DefaultEmbed(f"**```{translate_text('start_message', user_language)}```**"), view=lets_go__view)
+
+        def continued_presentation(interact: Interaction):
+            return self.presentation_two(interact)
+
+        lets_go__view = LetsGoView(continued_presentation, user_language)
+        try:
+            return await interaction.response.send_message(embed=DefaultEmbed(f"**```{translate_text('start_message', user_language)}```**"),
+                                                           view=lets_go__view)
+        except discord.errors.InteractionResponded:
+            return await interaction.user.send(embed=DefaultEmbed(f"**```{translate_text('start_message', user_language)}```**"), view=lets_go__view)
 
     async def presentation_two(self, interaction: Interaction):
         """
@@ -97,10 +109,17 @@ class PrivateMessageService:
           interaction: Interaction
         """
         user_language = interaction.locale
-        user_confirmed.user_confirm_rules(interaction.user)
-        ok_view = OkView(self.control_panel)
+
+        def confirmation_presentation(interact: Interaction):
+            user_confirmed.user_confirm_rules(interaction.user)
+            return self.control_panel(interact)
+
+        ok_view = OkView(confirmation_presentation)
         source_text = translate_text('disclaimer', user_language)
-        return await interaction.response.send_message(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
+        try:
+            return await interaction.response.send_message(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
 
     async def control_panel(self, interaction: Interaction = None, user_data: UserForm = None):
         """
@@ -119,8 +138,8 @@ class PrivateMessageService:
             user_language = interaction.locale
 
         async def share_form(interact: Interaction):
-            return await interact.response.send_message(
-                embed=DefaultEmbed(description=translate_text('greeting', user_language)))
+            # todo - прибрати з часом
+            return await interact.response.send_message(embed=DefaultEmbed(description=translate_text('greeting', user_language)))
 
         menu_views = MainMenuView(share_form=share_form)
 
@@ -176,7 +195,10 @@ class PrivateMessageService:
         """
         user_language = interaction.locale
         view = discord.ui.View()
-        await interaction.response.send_message(embed=DefaultEmbed(translate_text("enter_name", user_language)), view=view)
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(translate_text("enter_name", user_language)), view=view)
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(translate_text("enter_name", user_language)), view=view)
 
         def check(m):
             if m.channel.id == interaction.channel.id and not m.author.bot:
@@ -203,7 +225,10 @@ class PrivateMessageService:
           interaction: Interaction
         """
         user_language = interaction.locale
-        await interaction.user.send(embed=DefaultEmbed(translate_text('how_old', user_language)))
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(translate_text('how_old', user_language)))
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(translate_text('how_old', user_language)))
 
         def check(m):
             if m.channel.id == interaction.channel.id and not m.author.bot:
@@ -216,13 +241,12 @@ class PrivateMessageService:
                 age = int(msg.content)
                 if MIN_AGE <= age <= MAX_AGE:
                     self.USER_AGE = int(age)
-                    await self.user_gender(interaction)
-                    break
+                    return await self.user_gender(interaction)
                 else:
                     raise ValueError
             except ValueError:
                 await interaction.followup.send(embed=DefaultEmbed(description=translate_text('age_error', user_language)))
-                await self.user_age(interaction)
+                return self.user_age(interaction)
 
     async def user_gender(self, interaction: Interaction):
         """
@@ -250,7 +274,11 @@ class PrivateMessageService:
         view = discord.ui.View(timeout=None)
         view.add_item(select_view)
 
-        await interaction.followup.send(embed=DefaultEmbed(description=translate_text('choose_gender_hint', user_language)), view=view)
+        try:
+            return await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('choose_gender_hint', user_language)),
+                                                           view=view)
+        except discord.errors.InteractionResponded:
+            return await interaction.user.send(embed=DefaultEmbed(description=translate_text('choose_gender_hint', user_language)), view=view)
 
     async def opposite_gender(self, interaction: Interaction):
         """
@@ -278,11 +306,13 @@ class PrivateMessageService:
             callback=user_like_gender,
             placeholder=translate_text('choose_gender', user_language)
         )
-
         view = discord.ui.View(timeout=None)
         view.add_item(select_view)
 
-        await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=view)
+        try:
+            return await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=view)
+        except discord.errors.InteractionResponded:
+            return await interaction.user.send(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=view)
 
     async def user_location(self, interaction: Interaction):
         """
@@ -294,11 +324,9 @@ class PrivateMessageService:
           # The interaction that triggered the function.
           interaction: Interaction
         """
-
         user_language = interaction.locale
         lock = asyncio.Lock()
         view = discord.ui.View()
-        # todo - помістити цей except на місця з подібною помилкою
         try:
             await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('your_city', user_language)), view=view)
         except discord.errors.InteractionResponded:
@@ -317,8 +345,7 @@ class PrivateMessageService:
                     continue
                 else:
                     self.USER_LOCATION.extend([latitude, longitude])
-                    await self.user_games(interaction)
-                    break
+                    return await self.user_games(interaction)
 
     async def user_games(self, interaction: Interaction):
         """
@@ -331,7 +358,10 @@ class PrivateMessageService:
           interaction: Interaction
         """
         user_language = interaction.locale
-        await interaction.user.send(embed=DefaultEmbed(description=translate_text('enter_games', user_language)))
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('enter_games', user_language)))
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('enter_games', user_language)))
 
         def check(m):
             if m.channel.id == interaction.channel.id and not m.author.bot:
@@ -358,7 +388,10 @@ class PrivateMessageService:
           interaction: Interaction
         """
         user_language = interaction.locale
-        await interaction.user.send(embed=DefaultEmbed(description=translate_text('profile_description', user_language)))
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('profile_description', user_language)))
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('profile_description', user_language)))
 
         while True:
             def check(m):
@@ -368,7 +401,10 @@ class PrivateMessageService:
             message = await self.client.wait_for('message', check=check)
 
             if len(message.content) > 1024:
-                await interaction.user.send(embed=DefaultEmbed(description=translate_text('text_too_large', user_language)))
+                try:
+                    await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('text_too_large', user_language)))
+                except discord.errors.InteractionResponded:
+                    await interaction.user.send(embed=DefaultEmbed(description=translate_text('text_too_large', user_language)))
                 continue
             else:
                 self.USER_DESCRIPTION = message.content
@@ -387,7 +423,10 @@ class PrivateMessageService:
         """
         user_language = interaction.locale
         lock = asyncio.Lock()
-        await interaction.user.send(embed=DefaultEmbed(description=translate_text('upload_photo', user_language)))
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('upload_photo', user_language)))
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('upload_photo', user_language)))
 
         async with lock:
             while True:
@@ -420,7 +459,10 @@ class PrivateMessageService:
         user_system.create_user_form(id=interaction.user.id, name=self.USER_NAME, age=self.USER_AGE, gender=self.USER_GENDER,
                                      opposite_gender=self.OPPOSITE_GENDER, location=self.USER_LOCATION, games=self.USER_GAMES,
                                      description=self.USER_DESCRIPTION, photo=self.USER_PHOTO, language=user_language)
-        await interaction.user.send(embed=DefaultEmbed(description=translate_text('form_success', user_language)))
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('form_success', user_language)))
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('form_success', user_language)))
         self.reset_variables()
         return await self.user_profile(interaction)
 
@@ -455,7 +497,10 @@ class PrivateMessageService:
           interaction: Interaction
         """
         user_language = interaction.locale
-        return await interaction.user.send(embed=DefaultEmbed(description=translate_text('try_again', user_language)))
+        try:
+            return await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('try_again', user_language)))
+        except discord.errors.InteractionResponded:
+            return await interaction.user.send(embed=DefaultEmbed(description=translate_text('try_again', user_language)))
 
     @staticmethod
     async def edit_name(interaction: Interaction):
@@ -497,7 +542,6 @@ class PrivateMessageService:
 
         view = discord.ui.View(timeout=None)
         view.add_item(select_view)
-
         await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('choose_gender_hint', user_language)), view=view,
                                                 ephemeral=True)
 
@@ -523,7 +567,10 @@ class PrivateMessageService:
     async def edit_photo(self, interaction: Interaction):
         user_language = interaction.locale
         lock = asyncio.Lock()
-        await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('upload_photo', user_language)), ephemeral=True)
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('upload_photo', user_language)), ephemeral=True)
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('upload_photo', user_language)))
 
         async with lock:
             while True:
@@ -535,10 +582,16 @@ class PrivateMessageService:
                 attachment_url = str(message.attachments[0])
 
                 if len(message.attachments) == 0:
-                    await interaction.followup.send(embed=DefaultEmbed(description=translate_text('no_photo_error', user_language)))
+                    try:
+                        await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('no_photo_error', user_language)))
+                    except discord.errors.InteractionResponded:
+                        await interaction.user.send(embed=DefaultEmbed(description=translate_text('no_photo_error', user_language)))
                     continue
                 if not is_valid_image_url(attachment_url):
-                    await interaction.followup.send(embed=DefaultEmbed(description=translate_text('no_photo_url_error', user_language)))
+                    try:
+                        await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('no_photo_url_error', user_language)))
+                    except discord.errors.InteractionResponded:
+                        await interaction.user.send(embed=DefaultEmbed(description=translate_text('no_photo_url_error', user_language)))
                     continue
 
                 user_system.update_user_field(user_id=interaction.user.id, field_name='photo', new_value=str(message.attachments[0]))
