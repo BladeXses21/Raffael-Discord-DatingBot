@@ -6,6 +6,7 @@ from geopy.geocoders import Nominatim
 import geopy.distance
 import requests
 
+from config import OPENCAGEDATA_API_KEY
 from database.system.user_form import user_system
 from model.user_model.user import UserForm
 from templates.embeds.base import DefaultEmbed
@@ -44,34 +45,42 @@ def get_city_from_coordinates(latitude, longitude):
     url = f"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json"
     response = requests.get(url)
     data = response.json()
-    if 'address' in data:
-        city = data['address'].get('town', '')
-        return city
-    else:
-        return None
+    # Перелік можливих ключів адреси
+    address_keys = ['town', 'city', 'village', 'suburb', 'hamlet', 'locality']
+
+    for key in address_keys:
+        if 'address' in data:
+            value = data['address'].get(key, '')
+            if value:
+                return value
+    return ''
 
 
 def check_location(location):
-    """
-    Check if a location is valid.
+    url = f'https://api.opencagedata.com/geocode/v1/json?q={location}&key={OPENCAGEDATA_API_KEY}'
 
-    Args:
-      location: The location to check.
-
-    Returns:
-      True if the location is valid, False otherwise.
-    """
-    if location.isdigit():
-        return None
-    elif any(char.isdigit() for char in location):
-        return None
     try:
-        geolocator = Nominatim(user_agent='Raffael')
-        location = geolocator.geocode(str(location))
-        print(location)
-    except TimeoutError:
+        # Виконуємо GET-запит до API.
+        response = requests.get(url)
+
+        # Перевіряємо, чи отримали ми успішну відповідь від сервера.
+        if response.status_code == 200:
+            data = response.json()
+
+            # Парсимо дані, щоб отримати координати.
+            if 'results' in data and len(data['results']) > 0:
+                lat = data['results'][0]['geometry']['lat']
+                lon = data['results'][0]['geometry']['lng']
+                print(lat, lon)
+                return lat, lon
+            else:
+                return None
+        else:
+            print('Помилка під час виконання запиту:', response.status_code)
+            return None
+    except Exception as e:
+        print('Помилка:', str(e))
         return None
-    return location.latitude, location.longitude
 
 
 # validate user form in user_form system

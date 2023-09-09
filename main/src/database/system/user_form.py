@@ -5,7 +5,6 @@ from discord import User
 from database.database_system import DatabaseSystem
 from database.mongo_types import UserFormDB
 from model.user_model.user import UserForm
-from typing import Literal
 
 
 class UserSystem(DatabaseSystem):

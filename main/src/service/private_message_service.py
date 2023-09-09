@@ -117,9 +117,11 @@ class PrivateMessageService:
         ok_view = OkView(confirmation_presentation)
         source_text = translate_text('disclaimer', user_language)
         try:
-            return await interaction.response.send_message(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
+            msg = await interaction.response.send_message(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
+            await msg.pin()
         except discord.errors.InteractionResponded:
-            await interaction.user.send(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
+            msg = await interaction.user.send(embed=DefaultEmbed(f"**```{source_text}```**"), view=ok_view)
+            await msg.pin()
 
     async def control_panel(self, interaction: Interaction = None, user_data: UserForm = None):
         """
@@ -150,11 +152,16 @@ class PrivateMessageService:
 
         if interaction.message is None:
             try:
-                await interaction.response.send_message(embed=MainPanelEmbed(user_language).embed, view=menu_views)
+                msg = await interaction.response.send_message(embed=MainPanelEmbed(user_language).embed, view=menu_views)
+                await msg.pin()
             except discord.errors.InteractionResponded:
-                await interaction.user.send(embed=MainPanelEmbed(user_language).embed, view=menu_views)
+                msg = await interaction.user.send(embed=MainPanelEmbed(user_language).embed, view=menu_views)
+                await msg.pin()
         else:
-            await interaction.response.edit_message(embed=MainPanelEmbed(user_language).embed, view=menu_views)
+            try:
+                await interaction.response.edit_message(embed=MainPanelEmbed(user_language).embed, view=menu_views)
+            except discord.errors.InteractionResponded:
+                await interaction.edit_original_response(embed=MainPanelEmbed(user_language).embed, view=menu_views)
 
     async def user_settings(self, interaction: Interaction):
         user = interaction.user
@@ -165,17 +172,7 @@ class PrivateMessageService:
 
         user_language = interaction.locale
 
-        settings_view = SettingsMenuView(
-            name=self.edit_name,
-            age=self.edit_age,
-            gender=self.edit_gender,
-            opposite_gender=self.edit_opposite_gender,
-            location=self.edit_location,
-            games=self.edit_games,
-            description=self.edit_description,
-            photo=self.edit_photo,
-            back=self.back_to_menu,
-        )
+        settings_view = SettingsMenuView()
 
         if interaction.message is None:
             await interaction.response.send_message(embed=SettingsEmbed(user_language).embed, view=settings_view)
@@ -531,7 +528,7 @@ class PrivateMessageService:
     async def edit_gender(interaction: Interaction):
         async def chose_gender(interact: Interaction):
             user_system.update_user_field(user_id=interaction.user.id, field_name='gender', new_value=select_view.values[0])
-            return await interact.response.edit_message(select_view.values[0])
+            return await interact.response.send_message(select_view.values[0], ephemeral=True)
 
         user_language = interaction.locale
         select_view = GenderSelectView(
@@ -549,7 +546,7 @@ class PrivateMessageService:
     async def edit_opposite_gender(interaction: Interaction):
         async def chose_opposite_gender(interact: Interaction):
             user_system.update_user_field(user_id=interaction.user.id, field_name='opposite_gender', new_value=select_view.values[0])
-            return await interact.response.edit_message(select_view.values[0])
+            return await interact.response.send_message(select_view.values[0], ephemeral=True)
 
         user_language = interaction.locale
         select_view = GenderSelectView(
@@ -561,8 +558,11 @@ class PrivateMessageService:
         view = discord.ui.View(timeout=None)
         view.add_item(select_view)
 
-        await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=select_view,
-                                                ephemeral=True)
+        try:
+            await interaction.response.send_message(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=select_view,
+                                                    ephemeral=True)
+        except discord.errors.InteractionResponded:
+            await interaction.user.send(embed=DefaultEmbed(description=translate_text('interested_in', user_language)), view=select_view)
 
     async def edit_photo(self, interaction: Interaction):
         user_language = interaction.locale
